@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 public class ApplicationDbContext : DbContext
 {
@@ -28,4 +29,5 @@ public class WeatherForecast
     public DateTime Date { get; set; }
     public int TemperatureC { get; set; }
     public string Summary { get; set; }
+    public string WeatherType { get; set; }
 }

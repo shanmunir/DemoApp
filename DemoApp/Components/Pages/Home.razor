@@ -1,7 +1,50 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+@page "/add-weather"
+@inject ApplicationDbContext Db
+@using System.ComponentModel.DataAnnotations
 
-<h1>Hello, world!</h1>
+<h3>Add Weather Forecast</h3>
 
-Welcome to your new app.
+<EditForm Model="@weatherInput" OnValidSubmit="@HandleValidSubmit" FormName="Test">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Temperature (°C): </label>
+        <InputNumber @bind-Value="weatherInput.TemperatureC" class="form-control" />
+    </div>
+
+    <div>
+        <label>Summary: </label>
+        <InputText @bind-Value="weatherInput.Summary" class="form-control" />
+    </div>
+    <div>
+        <label>Weather Type: </label>
+        <InputText @bind-Value="weatherInput.WeatherType" class="form-control" />
+    </div>
+
+    <button class="btn btn-primary mt-3" type="submit">Add Forecast</button>
+
+    @if (successMessage != null)
+    {
+        <p class="text-success mt-2">@successMessage</p>
+    }
+</EditForm>
+
+@code {
+    private WeatherForecast weatherInput = new();
+    private string successMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        weatherInput.Date = DateTime.Now;
+        weatherInput.Summary = "TEST Summary";
+        weatherInput.TemperatureC = 60;
+        weatherInput.WeatherType = "Sunny";
+        Db.WeatherForecasts.Add(weatherInput);
+        await Db.SaveChangesAsync();
+        successMessage = "Forecast added successfully!";
+        weatherInput = new(); // Clear form
+    }
+}
